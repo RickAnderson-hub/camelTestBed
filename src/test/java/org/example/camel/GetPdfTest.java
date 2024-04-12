@@ -34,6 +34,9 @@ public class GetPdfTest {
         getPdf = new GetPdf(documentDataRepository);
     }
 
+    /**
+     * Test method for {@link org.example.camel.service.GetPdf#process(org.apache.camel.Exchange)}.
+     */
     @Test
     public void processShouldThrowDocumentNotFoundException() throws Exception {
         DocumentData documentData = new DocumentData();
@@ -42,6 +45,9 @@ public class GetPdfTest {
         assertThrows(ReceiptNotFoundException.class, () -> getPdf.process(exchange));
     }
 
+    /**
+     * Test method for {@link org.example.camel.service.GetPdf#process(org.apache.camel.Exchange)}.
+     */
     @Test
     public void processShouldThrowReceiptNotFoundException() throws Exception {
         when(documentDataRepository.findByReceiptId(anyString())).thenReturn(null);

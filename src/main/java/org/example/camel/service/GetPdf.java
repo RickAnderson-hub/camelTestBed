@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * Processor to get a pdf from the database
+ */
 @Service
 @Slf4j
 public class GetPdf implements Processor{

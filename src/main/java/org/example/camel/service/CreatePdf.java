@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 
 /**
- * This class simulates the creation of a PDF document from SC.
- * TODO: return a URL to the pdf document with some metadata.
- * TODO: store the pdf document with its metadata in the database.
+ * Processor to create a pdf and store it in the database
  */
 @Service
 @Slf4j

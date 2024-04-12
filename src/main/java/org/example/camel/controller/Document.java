@@ -16,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+
 @RestController
 public class Document {
 
@@ -27,6 +28,11 @@ public class Document {
         this.returnReceipt = returnReceipt;
     }
 
+    /**
+     * Get pdf by id
+     * @param id receipt id
+     * @return pdf
+     */
     @GetMapping(value = "/pdf/{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> getPdf(@PathVariable("id") String id) {
         byte[] pdfData = producerTemplate.requestBody("direct:getPdf", id, byte[].class);
@@ -36,6 +42,10 @@ public class Document {
                 .body(new InputStreamResource(new ByteArrayInputStream(pdfData)));
     }
 
+    /**
+     * Generate a document
+     * @return document
+     */
     @PostMapping(value = "/")
     public ResponseEntity<DocumentResource> generate() {
         String receiptId = producerTemplate.requestBody("direct:returnReceipt", null,  String.class);

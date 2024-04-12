@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Processor to return a receipt
+ */
 @Service
 @Slf4j
 public class ReturnReceipt implements Processor {

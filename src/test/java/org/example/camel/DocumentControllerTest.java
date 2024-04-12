@@ -31,6 +31,9 @@ public class DocumentControllerTest {
         documentController = new Document(producerTemplate, returnReceipt);
     }
 
+    /**
+     * Test method for {@link org.example.camel.controller.Document#getPdf(String)}.
+     */
     @Test
     public void getPdfShouldReturnPdf() {
         byte[] pdfData = new byte[0];
@@ -41,6 +44,9 @@ public class DocumentControllerTest {
         assert responseEntity.getStatusCode() == HttpStatus.OK;
     }
 
+    /**
+     * Test method for {@link org.example.camel.controller.Document#generate()}.
+     */
     @Test
     public void generateShouldReturnDocumentResource() {
         when(producerTemplate.requestBody(anyString(), any(), any())).thenReturn("testReceiptId");

@@ -32,6 +32,9 @@ public class ReturnReceiptTest {
         returnReceipt = new ReturnReceipt(documentDataRepository);
     }
 
+    /**
+     * Test method for {@link org.example.camel.service.ReturnReceipt#process(org.apache.camel.Exchange)}.
+     */
     @Test
     public void processShouldStoreReceiptId() throws Exception {
         returnReceipt.process(exchange);
