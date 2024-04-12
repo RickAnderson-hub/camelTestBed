@@ -1,26 +1,31 @@
 package org.example.camel.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.example.camel.database.DocumentData;
 import org.example.camel.database.DocumentDataRepository;
 import org.example.camel.exceptions.DocumentNotFoundException;
 import org.example.camel.exceptions.ReceiptNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.nonNull;
 
 @Service
+@Slf4j
 public class GetPdf implements Processor{
 
-    @Autowired
-    private DocumentDataRepository documentDataRepository;
+    private final DocumentDataRepository documentDataRepository;
+
+    public GetPdf(DocumentDataRepository documentDataRepository) {
+        this.documentDataRepository = documentDataRepository;
+    }
 
     @Override
     public void process(Exchange exchange) {
-        String receiptId = exchange.getIn().getHeader("receiptId", String.class);
+        String receiptId = exchange.getIn().getBody(String.class);
         DocumentData documentData = documentDataRepository.findByReceiptId(receiptId);
+        log.info("Pdf retrieved for receiptId: {}", receiptId);
         if (nonNull(documentData) && nonNull(documentData.getPdf())){
             exchange.getIn().setBody(documentData.getPdf());
         } else {
