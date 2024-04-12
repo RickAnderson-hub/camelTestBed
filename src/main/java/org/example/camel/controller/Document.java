@@ -1,5 +1,6 @@
 package org.example.camel.controller;
 
+import org.apache.camel.ProducerTemplate;
 import org.example.camel.service.CreatePdf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -15,11 +16,11 @@ import java.util.HashMap;
 public class Document {
 
     @Autowired
-    private CreatePdf createPdf;
+    private ProducerTemplate producerTemplate;
 
     @GetMapping(value = "/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> getPdf() {
-        byte[] pdfData = createPdf.getPdf(new HashMap<>());
+        byte[] pdfData = producerTemplate.requestBody("direct:createPdf", null, byte[].class);
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.APPLICATION_PDF)
