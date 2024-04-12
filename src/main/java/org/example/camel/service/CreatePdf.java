@@ -1,13 +1,30 @@
 package org.example.camel.service;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Map;
+
+/**
+ * This class simulates the creation of a PDF document from SC.
+ * Todo: add some metadata from 'data' and also some from the pdf doc and store it in the database.
+ * TODO: return a URL to the pdf document with some metadata.
+ * TODO: store the pdf document with its metadata in the database.
+ */
 @Service
 public class CreatePdf {
 
-    public byte[] generatePdf() {
-        // Your code to generate a PDF goes here
-        // For now, let's return an empty byte array
-        return new byte[0];
+    public byte[] getPdf(Map<String, Object> data) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PdfDocument pdf = new PdfDocument(new PdfWriter(baos));
+        Document document = new Document(pdf);
+        String line = "Hello! Welcome to the code crib";
+        document.add(new Paragraph(line));
+        document.close();
+        return baos.toByteArray();
     }
 }
