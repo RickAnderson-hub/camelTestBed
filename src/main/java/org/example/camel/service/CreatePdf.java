@@ -9,11 +9,9 @@ import org.apache.camel.Processor;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
 
 /**
  * This class simulates the creation of a PDF document from SC.
- * Todo: add some metadata from 'data' and also some from the pdf doc and store it in the database.
  * TODO: return a URL to the pdf document with some metadata.
  * TODO: store the pdf document with its metadata in the database.
  */
@@ -21,14 +19,14 @@ import java.util.Map;
 public class CreatePdf implements Processor {
 
     @Override
-    public void process(Exchange exchange) throws Exception {
+    public void process(Exchange exchange) {
+        String id = exchange.getIn().getMessageId();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PdfDocument pdf = new PdfDocument(new PdfWriter(baos));
         Document document = new Document(pdf);
         String line = "Hello! Welcome to the code crib";
         document.add(new Paragraph(line));
         document.close();
-
         byte[] pdfData = baos.toByteArray();
         exchange.getIn().setBody(pdfData);
     }
