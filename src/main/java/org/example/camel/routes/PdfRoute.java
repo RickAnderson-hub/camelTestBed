@@ -1,14 +1,14 @@
-package org.example.camel.configuration;
+package org.example.camel.routes;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.example.camel.service.CreatePdf;
 import org.example.camel.service.GetPdf;
 import org.example.camel.service.ReturnReceipt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-public class CamelConfig extends RouteBuilder {
+@Component
+public class PdfRoute extends RouteBuilder {
 
     @Autowired
     private ReturnReceipt returnReceipt;
