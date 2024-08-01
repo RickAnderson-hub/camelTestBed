@@ -28,7 +28,7 @@ dependencies {
     implementation 'com.itextpdf:itext7-core:8.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.camel.springboot:camel-spring-boot-starter:4.5.0'
-    implementation 'com.h2database:h2:2.2.224'
+    implementation 'com.h2database:h2:2.3.230'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
