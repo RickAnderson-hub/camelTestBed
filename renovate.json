@@ -2,5 +2,34 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
-  ]
+  ],
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "merge",
+  "platformAutomerge": true,
+  "requiredStatusChecks": [
+    "test"
+  ],
+  "branchConcurrentLimit": 10,
+  "prConcurrentLimit": 5,
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "addLabels": ["major-update"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "automerge": true
+    }
+  ],
+  "labels": ["dependencies", "renovate"],
+  "assignees": ["@RickAnderson-hub"],
+  "reviewers": ["@RickAnderson-hub"],
+  "schedule": ["before 6am every weekday", "every weekend"],
+  "timezone": "America/New_York"
 }
