@@ -8,7 +8,7 @@ group = 'org.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '25'
 }
 
 configurations {
@@ -29,6 +29,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.camel.springboot:camel-spring-boot-starter:4.15.0'
     implementation 'com.h2database:h2:2.4.240'
+    implementation 'io.vavr:vavr:0.11.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'

@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface DocumentDataRepository extends JpaRepository<DocumentData, Integer> {
 
-    DocumentData findByReceiptId(String receiptId);
+	DocumentData findByReceiptId(String receiptId);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE DocumentData d SET d.pdf = :pdf WHERE d.receiptId = :receiptId")
-    void updatePdfByReceiptId(String receiptId, byte[] pdf);
+	@Transactional
+	@Modifying
+	@Query("UPDATE DocumentData d SET d.pdf = :pdf WHERE d.receiptId = :receiptId")
+	void updatePdfByReceiptId(String receiptId, byte[] pdf);
 }

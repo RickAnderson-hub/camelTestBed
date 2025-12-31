@@ -4,36 +4,51 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+import io.vavr.control.Try;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.example.camel.database.DocumentDataRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.function.Function;
 
 /**
- * Processor to create a pdf and store it in the database
+ * Functional service to create a PDF and store it in the database
  */
 @Service
 @Slf4j
-public class CreatePdf implements Processor {
+public class CreatePdf implements Function<String, Try<Void>> {
 
-    @Autowired
-    private DocumentDataRepository documentDataRepository;
+	private final DocumentDataRepository documentDataRepository;
 
-    @Override
-    public void process(Exchange exchange) {
-        String receiptId = exchange.getIn().getHeader("receiptId", String.class);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PdfDocument pdf = new PdfDocument(new PdfWriter(baos));
-        Document document = new Document(pdf);
-        String line = "Hello and welcome to the code crib";
-        document.add(new Paragraph(line));
-        document.close();
-        byte[] pdfData = baos.toByteArray();
-        documentDataRepository.updatePdfByReceiptId(receiptId, pdfData);
-        log.info("Pdf created and stored for receiptId: {}", receiptId);
-    }
+	public CreatePdf(DocumentDataRepository documentDataRepository) {
+		this.documentDataRepository = documentDataRepository;
+	}
+
+	/**
+	 * Create a PDF for the given receipt ID and store it in the database
+	 *
+	 * @param receiptId the receipt identifier
+	 * @return Try containing success or failure
+	 */
+	@Override
+	public Try<Void> apply(String receiptId) {
+		return Try.run(() -> createAndStorePdf(receiptId))
+				.onSuccess(_ -> log.info("Pdf created and stored for receiptId: {}", receiptId))
+				.onFailure(e -> log.error("Failed to create pdf for receiptId: {}", receiptId, e));
+	}
+
+	private void createAndStorePdf(String receiptId) {
+		byte[] pdfData = generatePdfBytes();
+		documentDataRepository.updatePdfByReceiptId(receiptId, pdfData);
+	}
+
+	private byte[] generatePdfBytes() {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try (PdfDocument pdf = new PdfDocument(new PdfWriter(baos));
+		     Document document = new Document(pdf)) {
+			document.add(new Paragraph("Hello and welcome to the code crib"));
+		}
+		return baos.toByteArray();
+	}
 }

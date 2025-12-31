@@ -1,42 +1,45 @@
 package org.example.camel.service;
 
+import io.vavr.control.Either;
+import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.example.camel.database.DocumentData;
 import org.example.camel.database.DocumentDataRepository;
-import org.example.camel.exceptions.DocumentNotFoundException;
-import org.example.camel.exceptions.ReceiptNotFoundException;
+import org.example.camel.dto.PdfError;
 import org.springframework.stereotype.Service;
 
-import static java.util.Objects.nonNull;
+import java.util.function.Function;
 
 /**
- * Processor to get a pdf from the database
+ * Functional service to retrieve PDFs from the database
  */
 @Service
 @Slf4j
-public class GetPdf implements Processor{
+public class GetPdf implements Function<String, Either<PdfError, byte[]>> {
 
-    private final DocumentDataRepository documentDataRepository;
+	private final DocumentDataRepository documentDataRepository;
 
-    public GetPdf(DocumentDataRepository documentDataRepository) {
-        this.documentDataRepository = documentDataRepository;
-    }
+	public GetPdf(DocumentDataRepository documentDataRepository) {
+		this.documentDataRepository = documentDataRepository;
+	}
 
-    @Override
-    public void process(Exchange exchange) {
-        String receiptId = exchange.getIn().getBody(String.class);
-        DocumentData documentData = documentDataRepository.findByReceiptId(receiptId);
-        log.info("Pdf retrieved for receiptId: {}", receiptId);
-        if (nonNull(documentData) && nonNull(documentData.getPdf())){
-            exchange.getIn().setBody(documentData.getPdf());
-        } else {
-            if (nonNull(documentData)){
-                throw new DocumentNotFoundException("No pdf found for receiptId: " + receiptId);
-            } else {
-                throw new ReceiptNotFoundException("No receipt found for receiptId: " + receiptId);
-            }
-        }
-    }
+	/**
+	 * Retrieve PDF data by receipt ID
+	 *
+	 * @param receiptId the receipt identifier
+	 * @return Either containing PdfError on failure or byte[] on success
+	 */
+	@Override
+	public Either<PdfError, byte[]> apply(String receiptId) {
+		return Option.of(documentDataRepository.findByReceiptId(receiptId))
+				.toEither(() -> (PdfError) new PdfError.ReceiptNotFound(receiptId))
+				.flatMap(documentData -> extractPdf(documentData, receiptId))
+				.peek(_ -> log.info("Pdf retrieved for receiptId: {}", receiptId));
+	}
+
+	private Either<PdfError, byte[]> extractPdf(DocumentData documentData, String receiptId) {
+		return Option.of(documentData.getPdf())
+				.filter(pdf -> pdf.length > 0)
+				.toEither(() -> new PdfError.DocumentNotFound(receiptId));
+	}
 }
